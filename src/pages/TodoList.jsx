@@ -8,7 +8,7 @@ function TodoList() {
   const [currentTodo, setCurrentTodo] = useState({})
 
   const addTodo = (text) => {
-    const newTodo = { id: uuidv4(), text }
+    const newTodo = { id: uuidv4(), text, isComplete: false }
     const newTodos = [...todos, newTodo]
     setTodos(newTodos)
   }
@@ -26,6 +26,7 @@ function TodoList() {
     setCurrentTodo({
       id: todos[id].id,
       text: todos[id].text,
+      isComplete: todos[id].isComplete,
     })
   }
 
@@ -50,29 +51,42 @@ function TodoList() {
     setTodos(newTodos)
   }
 
+  const handleChangeStatus = (id) => {
+    const updateTodoStatus = todos.map((todo) => {
+      return todo.id === id ? {...todo, isComplete : !todo.isComplete} : todo
+    })
+    setTodos(updateTodoStatus)
+  }
+
   return (
     <>
       <div>
-        <h4>todo create</h4>
-        <ul>
+        <h2>Todo List</h2>
+        <ol>
           {todos.map((todo) => (
             <li key={todo.id}>
               {editTodo && currentTodo.id === todo.id ? (
                 <input
-                  type="text"
-                  value={currentTodo.text}
-                  onChange={(e) => handleInputChange(e)}
-                  disabled={true}
+                type="text"
+                value={currentTodo.text}
+                onChange={(e) => handleInputChange(e)}
+                disabled={true}
                 />
-              ) : (
-                  <><span>{todo.text}</span>
+                ) : (
+                  <>
+                  <input
+                    type="checkbox"
+                    checked={todo.isComplete}
+                    onChange={() => handleChangeStatus(todo.id)}
+                  />
+                    <span style={{ textDecoration : todo.isComplete ? "line-through" : "none" }}>{todo.text}</span>
                     <button onClick={() => handleEdit(todos.indexOf(todo))}>Update</button>
                     <button onClick={() => handleDelete(todo.id)}>Delete</button>
                   </>
                 )}
             </li>
           ))}
-        </ul>
+        </ol>
         <form onSubmit={editTodo ? handleUpdate : handleSubmit}>
           <label htmlFor="todo">name </label>
           <input
