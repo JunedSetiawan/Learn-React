@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import './../App.css'
+import { v4 as uuidv4 } from 'uuid'
 
 function TodoList() {
   const [todos, setTodos] = useState([])
+  const [editTodo, setEditTodo] = useState(false)
+  const [currentTodo, setCurrentTodo] = useState({})
 
   const addTodo = (text) => {
-    const newTodos = [...todos,{text}]
-    newTodos.push({ text })
-    return setTodos(newTodos)
+    const newTodo = { id: uuidv4(), text }
+    const newTodos = [...todos, newTodo]
+    setTodos(newTodos)
   }
-  
+
   const handleSubmit = (e) => {
     e.preventDefault()
     if (e.target.todo.value !== "") {
@@ -18,14 +21,33 @@ function TodoList() {
     }
   }
 
-//   const handleUpdate = (index) => {
-//     console.log(index)
-//   }
+  const handleEdit = (id) => {
+    setEditTodo(true)
+    setCurrentTodo({
+      id: todos[id].id,
+      text: todos[id].text,
+    })
+  }
 
-  const handleDelete = (index) => {
-    const newTodos = [...todos]
-    newTodos.splice(index, 1)
-    return setTodos(newTodos)
+  const handleUpdate = (e) => {
+    e.preventDefault()
+    
+    const updateTodos = todos.map((todo) =>
+        todo.id === currentTodo.id ? {...todo, text: currentTodo.text } : todo
+    )
+
+    setTodos(updateTodos)
+    setEditTodo(false)
+    setCurrentTodo({})
+  }
+
+  const handleInputChange = (e) => {
+    setCurrentTodo({ ...currentTodo, text: e.target.value })
+  }
+
+  const handleDelete = (id) => {
+    const newTodos = todos.filter((todo) => todo.id !== id)
+    setTodos(newTodos)
   }
 
   return (
@@ -33,18 +55,35 @@ function TodoList() {
       <div>
         <h4>todo create</h4>
         <ul>
-          {todos.map((todo, index) => (
-            <li key={index}>{todo.text}
-              {/* <button key={index} onClick={() => handleUpdate(index)}>Update</button> */}
-              <button key={index} onClick={() => handleDelete(index)}>Delete</button>
+          {todos.map((todo) => (
+            <li key={todo.id}>
+              {editTodo && currentTodo.id === todo.id ? (
+                <input
+                  type="text"
+                  value={currentTodo.text}
+                  onChange={(e) => handleInputChange(e)}
+                  disabled={true}
+                />
+              ) : (
+                  <><span>{todo.text}</span>
+                    <button onClick={() => handleEdit(todos.indexOf(todo))}>Update</button>
+                    <button onClick={() => handleDelete(todo.id)}>Delete</button>
+                  </>
+                )}
             </li>
           ))}
         </ul>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={editTodo ? handleUpdate : handleSubmit}>
           <label htmlFor="todo">name </label>
-          <input type="text" id="todo" name='todo'/>
-
-          <button type='submit'>submit</button>
+          <input
+            type="text"
+            id="todo"
+            name="todo"
+            value={currentTodo.text || ""}
+            onChange={(e) => handleInputChange(e)}
+          />
+          <button type="submit">{editTodo ? "Update" : "Submit"}</button>
+          {editTodo && <button onClick={() => setEditTodo(false)}>Cancel</button>}
         </form>
       </div>
     </>
