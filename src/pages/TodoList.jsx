@@ -85,7 +85,7 @@ function TodoList() {
                     onChange={() => handleChangeStatus(todo.id)}
                     className='checkbox checkbox-accent'
                   />
-                    <span style={{ textDecoration : todo.isComplete ? "line-through" : "none" }} className="text-lg font-medium pr-5 max-w-lg break-all">{todo.text}</span>
+                    <span style={{ textDecoration : todo.isComplete ? "line-through" : "none" }} className="text-lg font-medium pr-5 max-w-lg break-words">{todo.text}</span>
                     <button className='btn btn-outline btn-warning' onClick={() => handleEdit(todos.indexOf(todo))}>Update</button>
                     <button className='btn btn-outline btn-error' onClick={() => handleDelete(todo.id)}>Delete</button>
                   </>
