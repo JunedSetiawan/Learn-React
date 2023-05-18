@@ -1,15 +1,17 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 function Navbar({ setSelectedComponent }) {
+  const navigate = useNavigate()
+
   const handleLink = (component) => {
     setSelectedComponent(component);
+    navigate(`/${component}`)
   };
 
   return (
     <>
       <div className="btm-nav">
         <NavLink
-          exact="true"
           to="/"
           className="text-primary"
           activeclassname="active"

@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import Hero from '../components/Hero'
 import Navbar from '../components/Navbar'
 import './../App.css'
@@ -8,6 +10,20 @@ import TodoList from './TodoList'
 
 function Home() {
   const [selectedComponent, setSelectedComponent] = useState('home')
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+
+  useEffect(() => {
+    const component = location.pathname.substring(1);
+    if (component && component !== selectedComponent) {
+      setSelectedComponent(component);
+    }
+    setLoading(false); // Menghentikan loading setelah pembaruan selesai
+  }, [location, selectedComponent]);
+
+  if (loading) {
+    return <div><button className="btn loading">loading</button></div>; // Tampilkan indikator loading saat pembaruan sedang berlangsung
+  }
 
   const renderComponent = () => {
     switch (selectedComponent) {
