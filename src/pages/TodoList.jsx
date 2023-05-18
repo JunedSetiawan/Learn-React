@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import ReactPaginate from 'react-paginate';
+import Pagination from '../components/Pagination';
 import './../App.css';
 
 function TodoList() {
@@ -133,17 +133,12 @@ function TodoList() {
         </form>
            {todos.length !== 0 ? (
               <div className='max-w-lg text-center flex justify-center my-3'>
-                <ReactPaginate
-                  previousLabel="<<"  
-                  nextLabel=">>"     
-                  pageCount={Math.ceil(todos.length / itemsPerPage)}
-                  onPageChange={(selectedItem) => setCurrentPage(selectedItem.selected)}
-                  containerClassName={'pagination flex gap-2 items-center '}
-                  previousLinkClassName={'btn'}
-                  nextLinkClassName={'btn'}
-                  disabledClassName={'pagination__link--disabled'}
-                  activeClassName={'btn-primary px-3 py-1'}
-                />
+               <Pagination
+                 todos={todos}
+                 currentPage={currentPage}
+                 itemsPerPage={itemsPerPage}
+                 setCurrentPage={setCurrentPage}
+               />
               </div>
             ) : ('')}
       </div>
