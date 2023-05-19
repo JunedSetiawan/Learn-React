@@ -40,8 +40,8 @@ function Home() {
   
   return (
     <>
-      <Navbar setSelectedComponent={setSelectedComponent}/>
       {renderComponent()}
+      <Navbar setSelectedComponent={setSelectedComponent}/>
         {/* ini uji coba Home */}
     </>
   )

@@ -10,5 +10,9 @@ export default {
   plugins: [
     require('daisyui')
   ],
+
+  daisyui: {
+    theme: ['halloween','autumn']
+  }
 }
 
