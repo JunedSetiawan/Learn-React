@@ -7,7 +7,7 @@ function App() {
     <>
       {/* <div className="bg-base-200">
         </div> */}
-       <div className="hero min-h-screen sm:h-full bg-base-200">
+       <div className="min-h-screen hero sm:h-full bg-base-200">
         <ThemeToggle/>
         <div className="hero-content text-center">
           <Home />

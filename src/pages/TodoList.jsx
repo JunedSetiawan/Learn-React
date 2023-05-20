@@ -126,7 +126,7 @@ function TodoList() {
             required
             className='input input-bordered input-primary w-full max-w-xs'
           />
-          <button type='submit' className={editTodo ? 'btn btn-outline btn-warning' : 'btn btn-outline btn-ghost'}>
+          <button type='submit' className={editTodo ? 'btn btn-warning' : 'btn btn-primary'}>
             {editTodo ? 'Update' : 'Submit'}
           </button>
           {editTodo && <button onClick={() => setEditTodo(false)}>Cancel</button>}
