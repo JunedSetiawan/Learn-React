@@ -7,8 +7,8 @@ function TodoList() {
   const [todos, setTodos] = useState([]);
   const [editTodo, setEditTodo] = useState(false);
   const [currentTodo, setCurrentTodo] = useState({});
-  const [currentPage, setCurrentPage] = useState(0); // Step 3
-  const itemsPerPage = 4; // Step 4
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 4;
 
   const addTodo = (text) => {
     const newTodo = { id: uuidv4(), text, isComplete: false };
@@ -60,7 +60,7 @@ function TodoList() {
     setTodos(updateTodoStatus);
   };
 
-  // Step 5
+
   const offset = currentPage * itemsPerPage;
 
      return (
@@ -72,7 +72,7 @@ function TodoList() {
             <p className='text-lg font-bold text-gray-400'>Tidak ada tugas</p>
           ) : (
             todos
-              .slice(offset, offset + itemsPerPage) // Step 6
+              .slice(offset, offset + itemsPerPage)
               .map((todo) => (
                 <li key={todo.id} className='space-x-2 flex justify-start items-center'>
                   {editTodo && currentTodo.id === todo.id ? (
@@ -129,7 +129,10 @@ function TodoList() {
           <button type='submit' className={editTodo ? 'btn btn-warning' : 'btn btn-primary'}>
             {editTodo ? 'Update' : 'Submit'}
           </button>
-          {editTodo && <button onClick={() => setEditTodo(false)}>Cancel</button>}
+             {editTodo && <button onClick={() => {
+               setEditTodo(false)
+               setCurrentTodo({})
+             }}>Cancel</button>}
         </form>
            {todos.length !== 0 ? (
               <div className='max-w-lg text-center flex justify-center my-3'>
