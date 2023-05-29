@@ -1,4 +1,5 @@
 import './App.css'
+import SideMenu from './components/SideMenu'
 import ThemeToggle from './components/ThemeToggle'
 import Home from './pages/Home'
 
@@ -8,7 +9,8 @@ function App() {
       {/* <div className="bg-base-200">
         </div> */}
        <div className="min-h-screen hero sm:h-full bg-base-200">
-        <ThemeToggle/>
+        <ThemeToggle />
+        <SideMenu />
         <div className="hero-content text-center">
           <Home />
         </div>

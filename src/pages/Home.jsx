@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom'
 import Hero from '../components/Hero'
 import Navbar from '../components/Navbar'
 import './../App.css'
+import ChangeBackground from './ChangeBackround'
 import Counter from './Counter'
 import Inputdom from './Inputdom'
 import TodoList from './TodoList'
@@ -33,6 +34,8 @@ function Home() {
         return <Inputdom />;
       case 'todolist':
         return <TodoList />;
+      case 'changebackground':
+        return <ChangeBackground />;
       default :
         return <Hero />;
     }
