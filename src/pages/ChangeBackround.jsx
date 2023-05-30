@@ -9,7 +9,7 @@ function ChangeBackground() {
 
     return (
         <div className="flex flex-col space-y-3">
-            <div className="max-w-sm max-h-sm bg-neutral flex self-center p-28 break-all" style={{ backgroundColor : color }}>
+            <div className="max-w-xs max-h-xs bg-neutral flex self-center p-20 break-all sm:p-28" style={{ backgroundColor : color }}>
                 <span className={color === 'white' ? 'text-black font-medium' : 'text-white font-medium' }>{color}</span>
             </div>
             <input
