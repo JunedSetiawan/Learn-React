@@ -1,19 +1,36 @@
+import { useEffect } from 'react';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import Pagination from '../components/Pagination';
-import './../App.css';
+import TodoForm from '../components/Todo/TodoForm';
+import TodoHeader from '../components/Todo/TodoHeader';
+import TodoItems from '../components/Todo/TodoItems';
+import TodoPagination from '../components/Todo/TodoPagination';
 
 function TodoList() {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(() => {
+    const storedTodos = JSON.parse(localStorage.getItem('todos'));
+    return storedTodos || []
+  });
   const [editTodo, setEditTodo] = useState(false);
   const [currentTodo, setCurrentTodo] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 4;
 
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
+
   const addTodo = (text) => {
-    const newTodo = { id: uuidv4(), text, isComplete: false };
-    const newTodos = [...todos, newTodo];
-    setTodos(newTodos);
+    if (text.trim() !== '') {
+      const newTodo = { id: uuidv4(), text, isComplete: false };
+      const isDuplicate = todos.some((todo) => todo.text === text);
+      if (!isDuplicate) {
+        const newTodos = [...todos, newTodo];
+        setTodos(newTodos);
+      } else {
+        alert('list tidak boleh sama')
+      }
+    }
   };
 
   const handleSubmit = (e) => {
@@ -26,12 +43,14 @@ function TodoList() {
   };
 
   const handleEdit = (id) => {
-    setEditTodo(true);
-    setCurrentTodo({
-      id: todos[id].id,
-      text: todos[id].text,
-      isComplete: todos[id].isComplete,
-    });
+    if (id >= 0 && id < todos.length) {
+      setEditTodo(true);
+      setCurrentTodo({
+        id: todos[id].id,
+        text: todos[id].text,
+        isComplete: todos[id].isComplete,
+      });
+    }
   };
 
   const handleUpdate = (e) => {
@@ -54,97 +73,49 @@ function TodoList() {
   };
 
   const handleChangeStatus = (id) => {
-    const updateTodoStatus = todos.map((todo) =>
-      todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo
-    );
-    setTodos(updateTodoStatus);
+    const todoIndex = todos.findIndex((todo) => todo.id === id);
+    if (todoIndex >= 0 && todoIndex < todos.length) {
+      const updateTodoStatus = todos.map((todo) =>
+        todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo
+      );
+      setTodos(updateTodoStatus);
+    }
   };
 
 
   const offset = currentPage * itemsPerPage;
 
      return (
-    <>
-      <div className='max-w-lg'>
-        <h1 className='text-3xl font-bold'>Todo List</h1>
-        <ol className='m-4 space-y-2 my-11'>
-          {todos.length === 0 ? (
-            <p className='text-lg font-bold text-gray-400'>Tidak ada tugas</p>
-          ) : (
-            todos
-              .slice(offset, offset + itemsPerPage)
-              .map((todo) => (
-                <li key={todo.id} className='space-x-2 flex justify-start items-center'>
-                  {editTodo && currentTodo.id === todo.id ? (
-                    <input
-                      type='text'
-                      value={currentTodo.text}
-                      onChange={(e) => handleInputChange(e)}
-                      disabled={true}
-                      className='input input-bordered w-full max-w-lg'
-                    />
-                  ) : (
-                    <>
-                      <input
-                        type='checkbox'
-                        checked={todo.isComplete}
-                        onChange={() => handleChangeStatus(todo.id)}
-                        className='checkbox checkbox-accent'
-                      />
-                      <span
-                        style={{ textDecoration: todo.isComplete ? 'line-through' : 'none' }}
-                        className='text-lg font-medium pr-5 max-w-lg break-all'
-                      >
-                        {todo.text}
-                      </span>
-                      <button
-                        className='btn btn-outline btn-warning'
-                        onClick={() => handleEdit(todos.indexOf(todo))}
-                      >
-                        Update
-                      </button>
-                      <button
-                        className='btn btn-outline btn-error'
-                        onClick={() => handleDelete(todo.id)}
-                      >
-                        Delete
-                      </button>
-                    </>
-                  )}
-                </li>
-              ))
-          )}
-        </ol>
-        <form onSubmit={editTodo ? handleUpdate : handleSubmit} className='flex space-x-3'>
-          <input
-            type='text'
-            id='todo'
-            name='todo'
-            value={currentTodo.text || ''}
-            onChange={(e) => handleInputChange(e)}
-            placeholder='Tulis Tugas..'
-            required
-            className='input input-bordered input-primary w-full max-w-xs'
-          />
-          <button type='submit' className={editTodo ? 'btn btn-warning' : 'btn btn-primary'}>
-            {editTodo ? 'Update' : 'Submit'}
-          </button>
-             {editTodo && <button onClick={() => {
-               setEditTodo(false)
-               setCurrentTodo({})
-             }}>Cancel</button>}
-        </form>
-           {todos.length !== 0 ? (
-              <div className='max-w-lg text-center flex justify-center my-3'>
-               <Pagination
-                 todos={todos}
-                 currentPage={currentPage}
-                 itemsPerPage={itemsPerPage}
-                 setCurrentPage={setCurrentPage}
-               />
-              </div>
-            ) : ('')}
-      </div>
+       <>
+            <div className='max-w-lg'>
+           <TodoHeader headerText="localStorage" />
+           <TodoItems
+             todos={todos}
+             editTodo={editTodo}
+             currentTodo={currentTodo}
+             handleEdit={handleEdit}
+             handleDelete={handleDelete}
+             handleChangeStatus={handleChangeStatus}
+             handleInputChange={handleInputChange}
+             itemsPerPage={itemsPerPage}
+             offset={offset}
+           />
+           <TodoForm
+             editTodo={editTodo}
+             setEditTodo={setEditTodo}
+             handleUpdate={handleUpdate}
+             handleSubmit={handleSubmit}
+             currentTodo={currentTodo}
+             setCurrentTodo={setCurrentTodo}
+             handleInputChange={handleInputChange}
+           />
+           <TodoPagination
+             todos={todos}
+             currentPage={currentPage} 
+             setCurrentPage={setCurrentPage}
+             itemsPerPage={itemsPerPage}
+           />
+           </div>
     </>
   );
 }
